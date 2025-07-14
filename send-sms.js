@@ -9,7 +9,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const api = Kavenegar.KavenegarApi({
-  apikey: "715A4F4B42414450513675636C34695134485A6651334E7943454D7670456A7767456173454431467A53343D",
+  apikey: process.env.KAVENEGAR_API_KEY,
 });
 
 app.post("/api/send-sms", (req, res) => {
@@ -35,7 +35,7 @@ console.log("sending  Kavenegar => receptor:", receptor, "| message:", message);
   );
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log("SMS API running on http://localhost:" + PORT);
 });
