@@ -45,6 +45,6 @@ app.post("/api/send-sms", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log("SMS API running on http://localhost:" + PORT);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("SMS API running on http://0.0.0.0:" + PORT);
 });
