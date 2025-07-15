@@ -19,7 +19,7 @@ function sendSMS(receptor, message) {
 
     api.Send(
       {
-        message,
+        message: encodeURIComponent(message),
         sender: "2000660110",
         receptor,
       },
