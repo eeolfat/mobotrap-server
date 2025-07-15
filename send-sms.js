@@ -12,27 +12,36 @@ const api = Kavenegar.KavenegarApi({
   apikey: process.env.KAVENEGAR_API_KEY,
 });
 
-app.post("/api/send-sms", (req, res) => {
+// تابع ارسال پیامک به صورت Promise
+function sendSMS(receptor, message) {
+  return new Promise((resolve, reject) => {
+    console.log("📨 درخواست پیامک دریافت شد:", receptor, message);
+    console.log("sending Kavenegar => receptor:", receptor, "| message:", message);
+
+    api.Send(
+      {
+        message,
+        sender: "2000660110",
+        receptor,
+      },
+      (response, status) => {
+        console.log("📬 وضعیت ارسال:", status, response);
+        if (status === 200) resolve(response);
+        else reject(response);
+      }
+    );
+  });
+}
+
+app.post("/api/send-sms", async (req, res) => {
   const { receptor, message } = req.body;
 
-console.log("📨 درخواست پیامک دریافت شد:", receptor, message); // لاگ جدید
-console.log("sending  Kavenegar => receptor:", receptor, "| message:", message);
-  api.Send(
-    {
-      message,
-      sender: "2000660110",
-      receptor,
-    },
-    function (response, status) {
-      console.log("📬 وضعیت ارسال:", status, response); // لاگ وضعیت
-
-      if (status === 200) {
-        res.json({ success: true });
-      } else {
-        res.status(500).json({ error: "خطا در ارسال پیامک", response });
-      }
-    }
-  );
+  try {
+    const result = await sendSMS(receptor, message);
+    res.json({ success: true, result });
+  } catch (error) {
+    res.status(500).json({ error: "خطا در ارسال پیامک", details: error });
+  }
 });
 
 const PORT = process.env.PORT || 3001;
